@@ -1,0 +1,99 @@
+How to SSH connect freshly installed CentOS using Android/iOS phone
+
+
+Step 1: Give sudo privilege to the user in case you are not configuring with the root user. In the following screenshot, user ‘shree’ has no sudo privilege. So, it can not install any application. So, lets add user ‘shree’ to sudoers file.
+
+
+Step 2: Change user to root in order to add user ‘shree’ in sudoers group using the following command and give your root password.
+
+# su root
+
+Step 3: Use the ‘nano’ editor to configure the sudoers file.
+
+
+
+
+Step 4: Go to the line where you can see ‘wheel’ and add the user ‘shree’ to the wheel group just like below.
+shree	ALL=(ALL)		ALL
+
+
+
+
+
+
+
+
+Press Ctrl+X and Y and then ENTER to save the changes made. 
+
+Step 5: Switch back to user ‘shree’ with the following command.
+
+# su shree
+
+Step 6: Install ssh server and client with the command given below. In my case, you can see in the screenshot below that it is already installed. SSH packages are installed on CentOS by default. 
+‘-y’ in the command means “Assume yes; assume that the answer to any question which would be asked is yes.”
+
+# sudo yum -y install openssh-server openssh-clients
+
+
+The above command installs both OpenSSH client applications and the openSSH server daemon, sshd. Sshd continuously listens for client connections from any of the ssh clients. When there is a connection request, sshd sets up the connection.
+
+Step 7: Start SSH deamon
+
+# sudo systemctl start sshd
+
+Step 8: Check the status of the ssh deamon.
+
+#sudo systemctl status sshd
+
+
+The output of the command verifies that it is active. 
+
+Step 9: Enable SSH to start automatically after each time the system is restarted. 
+
+# sudo systemctl enable sshd
+
+Step 10: Configure the sshd_config file. In the following screenshot, we configure ‘PermitRootLogin’ as ‘no’ as it will disable the option to login as root via ssh. We will keep the default port for ssh as 22 as we will connect the devices locally. It is advisable to change this port number to non-standard port for security reasons especially when we would like to connect from external network. 
+
+#sudo nano /etc/ssh/sshd_config
+
+
+Uncomment the lines that was edited by removing the hashtag.
+
+
+Press Ctrl+X, and Y and then ENTER to save the changes made. 
+
+Step 11: Restart sshd:
+
+# sudo service sshd restart
+
+
+Step 12: Find the ip address of your centos machine with the following command.
+
+# hostname -I
+
+Step 13: In your phone, download the software, Termius. Termius is a ssh client that runs both on Desktop and Android/iOS phones. I will be using Android phone for this demonstration. It looks like the picture on the right side.
+
+Click on the ‘+’ sign on the bottom right and click on ‘New Host’. Fill the required information as follows.
+
+
+Alias: ‘Write name of your choice’.
+Hostname or IP Address: ‘Write IP address of CentOS machine.
+Check the SSH option.
+Port: 22
+Username: ‘Write your username, in my case I wrote shree.’
+Password: ‘Give your password’
+
+Click on the tick button on the top right corner. 
+
+After this, you can see the new host has been created. Click the host and your phone should now connected to the CentOS machine. 
+
+
+
+
+
+
+
+
+Reference
+a) phoenixNAP, 2019. How to Install/Enable openSSh on CentOS7. https://phoenixnap.com/kb/how-to-enable-ssh-centos-7. 
+b) https://laptrinhx.com/linux-ssh-port-security-settings-server-setup-160275760/
